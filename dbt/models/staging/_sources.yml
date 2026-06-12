@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: postgres
+    description: "Operational (OLTP) tables extracted from the Postgres app database."
+    database: ECOMMERCE
+    schema: RAW
+    config:
+      loaded_at_field: "to_timestamp_ntz(_loaded_at)"
+      freshness:
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    tables:
+      - name: customers
+      - name: products
+      - name: orders
+      - name: order_items
+
+  - name: s3
+    description: "Flat files (clickstream + marketing spend) landed from object storage."
+    database: ECOMMERCE
+    schema: RAW
+    config:
+      loaded_at_field: "to_timestamp_ntz(_loaded_at)"
+      freshness:
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    tables:
+      - name: web_events
+      - name: marketing_spend
+
+  - name: api
+    description: "Daily FX reference rates pulled from the Frankfurter REST API."
+    database: ECOMMERCE
+    schema: RAW
+    config:
+      loaded_at_field: "to_timestamp_ntz(_loaded_at)"
+      freshness:
+        warn_after: {count: 24, period: hour}
+        error_after: {count: 48, period: hour}
+    tables:
+      - name: fx_rates

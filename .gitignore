@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# dbt build artifacts
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+profiles.yml
+package-lock.yml
+
+# Secrets / environment
+.env
+*.pem
+
+# Terraform (Stage 6)
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+
+# Airflow (later)
+airflow/logs/
+airflow.db
+airflow.cfg
+
+# Generated sample data (recreate with scripts/generate_sources.py)
+data/sample/

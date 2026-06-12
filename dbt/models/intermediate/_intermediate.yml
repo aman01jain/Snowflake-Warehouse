@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: int_fx__daily_rates
+    description: "Forward-filled daily FX rate per currency (USD = 1)."
+    columns:
+      - name: rate_to_usd
+        tests: [not_null]
+
+  - name: int_order_items__enriched
+    description: "Order line items + order header + FX; USD and local-currency amounts."
+    columns:
+      - name: order_item_id
+        tests: [unique, not_null]
+      - name: gross_amount_usd
+        tests: [not_null]

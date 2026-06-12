@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: dim_channels
+    description: "Marketing channel dimension."
+    columns:
+      - name: channel_key
+        tests: [unique, not_null]
+      - name: channel_name
+        tests: [unique, not_null]
+
+  - name: fct_marketing_spend
+    description: "Fact: marketing spend per channel per day."
+    columns:
+      - name: marketing_spend_key
+        tests: [unique, not_null]
+      - name: channel_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
+      - name: spend_date_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_dates')
+                field: date_key
+
+  - name: fct_web_events
+    description: "Fact: one row per web event (customer_key null = anonymous)."
+    columns:
+      - name: event_id
+        tests: [unique, not_null]
+      - name: customer_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key

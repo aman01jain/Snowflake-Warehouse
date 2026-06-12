@@ -1,0 +1,82 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Customer dimension (one row per customer)."
+    columns:
+      - name: customer_key
+        tests: [unique, not_null]
+      - name: customer_id
+        tests: [unique, not_null]
+
+  - name: dim_products
+    description: "Product dimension."
+    columns:
+      - name: product_key
+        tests: [unique, not_null]
+      - name: product_id
+        tests: [unique, not_null]
+
+  - name: dim_dates
+    description: "Date dimension (one row per calendar day)."
+    columns:
+      - name: date_key
+        tests: [unique, not_null]
+      - name: date_day
+        tests: [unique, not_null]
+
+  - name: fct_order_items
+    description: "Fact: one row per order line item."
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "gross_amount_usd >= 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "quantity > 0"
+    columns:
+      - name: order_item_key
+        tests: [unique, not_null]
+      - name: customer_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key
+      - name: product_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_key
+      - name: order_date_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_dates')
+                field: date_key
+      - name: order_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['placed', 'shipped', 'delivered', 'cancelled', 'returned']
+      - name: gross_amount_usd
+        tests: [not_null]
+
+  - name: fct_orders
+    description: "Fact: one row per order (aggregated)."
+    columns:
+      - name: order_key
+        tests: [unique, not_null]
+      - name: customer_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key
+      - name: order_date_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_dates')
+                field: date_key
