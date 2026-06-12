@@ -1,0 +1,2 @@
+# Copy to terraform.tfvars (gitignored) and set your Snowflake login.
+snowflake_user = "AMAN2022JAIN"
