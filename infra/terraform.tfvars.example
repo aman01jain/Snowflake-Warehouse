@@ -1,0 +1,4 @@
+# Copy to terraform.tfvars and set a globally-unique bucket name.
+# (terraform.tfvars is gitignored so it never goes public.)
+aws_region  = "us-east-1"
+bucket_name = "aman-ecommerce-datalake-CHANGE-ME-12345"
